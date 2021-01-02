@@ -1,7 +1,8 @@
 #!/bin/bash
+# language: potuguese pt-br
 # escrito por cristiano nunes/ 2018
 # postcristiano@gmail.com
-# usar apenas em debian-like distros
+# only debian-like distros
 
 
 function instala() {
