@@ -3,7 +3,7 @@
 # escrito por cristiano nunes/ 2018
 # postcristiano@gmail.com
 # only debian-like distros
-
+# test versioning a
 
 function instala() {
 
