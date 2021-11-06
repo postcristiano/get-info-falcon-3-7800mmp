@@ -1,0 +1,34 @@
+--************************************************************************************
+-- This MIB module defines the Harris RF Communications Common MIB.
+--
+-- Description: The RF Communications Common module contains common configuration and 
+--              status parameters.
+-- 
+-- 
+-- THIS INFORMATION IS ITAR CONTROLLED
+--
+-- THIS INFORMATION IS CONTROLLED BY THE U.S. DEPARTMENT OF STATE INTERNATIONAL TRAFFIC 
+-- IN ARMS REGULATIONS (ITAR), 22CFR 120-130, AND CANNOT BE EXPORTED FROM THE UNITED 
+-- STATES OR SHARED WITH A FOREIGN PERSON WITHOUT PRIOR APPROVAL FROM THE UNITED 
+-- STATES GOVERNMENT.
+--
+--************************************************************************************
+RFCOM-COMMON-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+    MODULE-IDENTITY, OBJECT-TYPE, enterprises FROM SNMPv2-SMI
+    rfcom FROM RFCOM-MIB;
+
+rfcomCommonMib MODULE-IDENTITY
+   LAST-UPDATED "201502190000Z"
+   ORGANIZATION "Harris Corporation"
+   CONTACT-INFO "Harris RFCD (585) 244-5830"
+   DESCRIPTION "MIB for Harris RFCOM common functionality"
+   ::= { rfcom 3 }
+   
+rfcomCommonPlatforms      OBJECT IDENTIFIER ::= { rfcomCommonMib 1 }   
+rfcomCommonWaveforms      OBJECT IDENTIFIER ::= { rfcomCommonMib 2 }
+rfcomCommonDevices        OBJECT IDENTIFIER ::= { rfcomCommonMib 3 }
+rfcomCommonNetworking     OBJECT IDENTIFIER ::= { rfcomCommonMib 4 }
+
+END

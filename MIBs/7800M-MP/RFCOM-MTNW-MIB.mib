@@ -1,0 +1,455 @@
+
+-- ************************************************************************************
+-- This MIB module defines the Harris RF Communications MTNW MIB.
+-- 
+-- Description: The MTNW module contains the parameters that
+--              provide status of the Harris M-TNW Waveform.
+-- 
+-- THIS INFORMATION IS ITAR CONTROLLED
+-- 
+-- THIS INFORMATION IS CONTROLLED BY THE U.S. DEPARTMENT OF STATE INTERNATIONAL TRAFFIC 
+-- IN ARMS REGULATIONS (ITAR), 22CFR 120-130, AND CANNOT BE EXPORTED FROM THE UNITED 
+-- STATES OR SHARED WITH A FOREIGN PERSON WITHOUT PRIOR APPROVAL FROM THE UNITED 
+-- STATES GOVERNMENT.
+-- 
+-- ************************************************************************************
+
+RFCOM-MTNW-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+   OBJECT-GROUP, MODULE-COMPLIANCE, NOTIFICATION-GROUP
+            FROM SNMPv2-CONF
+   NOTIFICATION-TYPE, OBJECT-TYPE, MODULE-IDENTITY, 
+   IpAddress, Gauge32, Integer32, Counter32
+      FROM SNMPv2-SMI
+   TEXTUAL-CONVENTION, TruthValue, DisplayString
+      FROM SNMPv2-TC
+   rfcomCommonWaveforms
+      FROM RFCOM-COMMON-MIB;
+
+mTnw MODULE-IDENTITY
+   LAST-UPDATED "201506090001Z"
+   ORGANIZATION 
+      "Harris Corporation"
+   CONTACT-INFO 
+      "Harris RFCD"
+   DESCRIPTION 
+      "MIB for Harris MTNW Midtier TDMA Networking Waveform."
+::= { rfcomCommonWaveforms 8 }
+
+
+MTnwNodeSlot ::= TEXTUAL-CONVENTION
+   DISPLAY-HINT   "d"
+   STATUS     current
+   DESCRIPTION 
+      "Timeslot utilized by a particular node to receive data in this M-TNW network.
+             A value of 0 indicates no slot information is available."
+   SYNTAX  Integer32 (0..1000)
+
+mTnwTraps            OBJECT IDENTIFIER ::= { mTnw 31 }
+
+mTnwFrequency  OBJECT-TYPE
+   SYNTAX     DisplayString (SIZE(0..10))
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Center frequency of this M-TNW network."
+   ::= { mTnw 1 }
+
+mTnwUpTime  OBJECT-TYPE
+   SYNTAX     Counter32
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Number of seconds this M-TNW network has been active."
+   ::= { mTnw 2 }
+
+mTnwSlotId  OBJECT-TYPE
+   SYNTAX     MTnwNodeSlot
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Timeslot this radio occupies."
+   ::= { mTnw 3 }
+
+mTnwNodesInNet  OBJECT-TYPE
+   SYNTAX     Integer32
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Number of nodes in this M-TNW network."
+   ::= { mTnw 4 }
+
+mTnwOneHopNeighbors  OBJECT-TYPE
+   SYNTAX     Integer32
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Number of nodes this radio can directly reach (no relay)."
+   ::= { mTnw 5 }
+
+mTnwDataPacketsSent  OBJECT-TYPE
+   SYNTAX     Counter32
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Number of data packets sent by this node to the M-TNW network."
+   ::= { mTnw 6 }
+
+mTnwDataPacketsReceived  OBJECT-TYPE
+   SYNTAX     Counter32
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Number of data packets received by this node from the M-TNW network."
+   ::= { mTnw 7 }
+
+mTnwDataPacketsRelayed  OBJECT-TYPE
+   SYNTAX     Counter32
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Number of data packets relayed by this node from/to the M-TNW network."
+   ::= { mTnw 8 }
+
+mTnwTxDataPacketsDropped  OBJECT-TYPE
+   SYNTAX     Counter32
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Number of data packets dropped during transmit by this node destined for the M-TNW network."
+   ::= { mTnw 9 }
+
+mTnwRxDataPacketsDropped  OBJECT-TYPE
+   SYNTAX     Counter32
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Number of data packets dropped during receive by this node from the M-TNW network."
+   ::= { mTnw 10 }
+
+mTnwMcastPacketsSent  OBJECT-TYPE
+   SYNTAX     Counter32
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Number of multicast packets sent by this node to the M-TNW network."
+   ::= { mTnw 11 }
+
+mTnwMcastPacketsReceived  OBJECT-TYPE
+   SYNTAX     Counter32
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Number of multicast packets received by this node from the M-TNW network."
+   ::= { mTnw 12 }
+
+mTnwMcastPacketsRelayed  OBJECT-TYPE
+   SYNTAX     Counter32
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Number of multicast packets relayed by this node from/to the M-TNW network."
+   ::= { mTnw 13 }
+
+mTnwTxMcastPacketsDropped  OBJECT-TYPE
+   SYNTAX     Counter32
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Number of multicast packets dropped during transmit by this node destined for the M-TNW network."
+   ::= { mTnw 14 }
+
+mTnwRxMcastPacketsDropped  OBJECT-TYPE
+   SYNTAX     Counter32
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Number of multicast packets dropped during receive by this node from the M-TNW network."
+   ::= { mTnw 15 }
+
+mTnwVoicePacketsSent  OBJECT-TYPE
+   SYNTAX     Counter32
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Number of voice packets sent by this node to the M-TNW network."
+   ::= { mTnw 16 }
+
+mTnwVoicePacketsReceived  OBJECT-TYPE
+   SYNTAX     Counter32
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Number of voice packets received by this node from the M-TNW network."
+   ::= { mTnw 17 }
+
+mTnwVoicePacketsRelayed  OBJECT-TYPE
+   SYNTAX     Counter32
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Number of voice packets relayed by this node from/to the M-TNW network."
+   ::= { mTnw 18 }
+
+mTnwTxVoicePacketsDropped  OBJECT-TYPE
+   SYNTAX     Counter32
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Number of voice packets dropped during transmit by this node destined for the M-TNW network."
+   ::= { mTnw 19 }
+
+mTnwRxVoicePacketsDropped  OBJECT-TYPE
+   SYNTAX     Counter32
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Number of voice packets dropped during receive by this node from the M-TNW network."
+   ::= { mTnw 20 }
+
+mTnwBeaconPacketsSent  OBJECT-TYPE
+   SYNTAX     Counter32
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Number of beacon packets sent by this node to the M-TNW network."
+   ::= { mTnw 21 }
+
+mTnwBeaconPacketsReceived  OBJECT-TYPE
+   SYNTAX     Counter32
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Number of beacon packets received by this node from the M-TNW network."
+   ::= { mTnw 22 }
+
+mTnwTransmitRate  OBJECT-TYPE
+   SYNTAX     Gauge32
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Current transmission rate in Kilobits per second."
+   ::= { mTnw 23 }
+
+mTnwReceiveRate  OBJECT-TYPE
+   SYNTAX     Gauge32
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Current receive rate in Kilobits per second."
+   ::= { mTnw 24 }
+
+mTnwFlowPauseCount  OBJECT-TYPE
+   SYNTAX     Counter32
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Number of times this node has gone into flow pause."
+   ::= { mTnw 25 }
+
+mTnwTransmitPower  OBJECT-TYPE
+   SYNTAX     DisplayString (SIZE(0..10))
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Current transmission power in Watts."
+   ::= { mTnw 26 }
+
+mTnwVSWR  OBJECT-TYPE
+   SYNTAX     DisplayString (SIZE(0..10))
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Voltage Standing Wave Ratio."
+   ::= { mTnw 27 }
+
+-- Table of Nodes in the M-TNW Network
+
+mTnwNetworkTable  OBJECT-TYPE
+   SYNTAX SEQUENCE OF MTnwNetEntry
+   MAX-ACCESS not-accessible
+   STATUS     current
+   DESCRIPTION 
+      "A list of hosts visible in the RF network."
+   ::= { mTnw 28 }
+
+-- Defines rfHostEntry variable, and place in rfHostsTable
+
+mTnwNetEntry  OBJECT-TYPE
+   SYNTAX   MTnwNetEntry
+   MAX-ACCESS not-accessible
+   STATUS     current
+   DESCRIPTION 
+      "A list of nodes visible in the M-TNW network."
+   INDEX { mTnwNetNodeID }
+   ::= { mTnwNetworkTable 1 }
+
+MTnwNetEntry ::= SEQUENCE {
+   mTnwNetNodeID
+      MTnwNodeSlot,
+   mTnwNetRedIP
+      IpAddress,
+   mTnwNetBlackIP
+      IpAddress,
+   mTnwNetHops
+      Integer32,
+   mTnwNetWaveformID
+      INTEGER,
+   mTnwNetNextHopNode
+      MTnwNodeSlot
+}
+
+mTnwNetNodeID  OBJECT-TYPE
+   SYNTAX     MTnwNodeSlot
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Timeslot used when transmitting to this node."
+   ::= { mTnwNetEntry 1 }
+
+mTnwNetRedIP  OBJECT-TYPE
+   SYNTAX     IpAddress
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Red IP Address of this node."
+   ::= { mTnwNetEntry 2 }
+
+mTnwNetBlackIP  OBJECT-TYPE
+   SYNTAX     IpAddress
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Black IP Address of this node."
+   ::= { mTnwNetEntry 3 }
+
+mTnwNetHops  OBJECT-TYPE
+   SYNTAX     Integer32
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Number of hops needed to reach this node."
+   ::= { mTnwNetEntry 4 }
+
+mTnwNetWaveformID  OBJECT-TYPE
+   SYNTAX     INTEGER {
+      wf1 (1),
+      wf2 (2),
+      wf3 (3),
+      wf4 (4),
+      wf5 (5),
+      wf6 (6),
+      wf7 (7) 
+   }
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "Waveform type used to transmit to this node."
+   ::= { mTnwNetEntry 5 }
+
+mTnwNetNextHopNode  OBJECT-TYPE
+   SYNTAX     MTnwNodeSlot
+   MAX-ACCESS read-only
+   STATUS     current
+   DESCRIPTION 
+      "If multiple hops are necessary to reach this node, the
+             node id of the first hop."
+   ::= { mTnwNetEntry 6 }
+
+mTnwSendHostJoinedTrap  OBJECT-TYPE
+   SYNTAX     TruthValue
+   MAX-ACCESS read-write
+   STATUS     current
+   DESCRIPTION 
+      "If this node should send a trap when a node joins the M-TNW network."
+   ::= { mTnw 29 }
+
+mTnwSendHostLeftTrap  OBJECT-TYPE
+   SYNTAX     TruthValue
+   MAX-ACCESS read-write
+   STATUS     current
+   DESCRIPTION 
+      "If this node should send a trap when a node leaves the M-TNW network."
+   ::= { mTnw 30 }
+
+mTnwNodeJoined  NOTIFICATION-TYPE
+   OBJECTS { mTnwNetNodeID, 
+      mTnwNetRedIP, 
+      mTnwNetBlackIP }
+   STATUS     current
+   DESCRIPTION 
+      "Indicates a node joined the M-TNW network."
+   ::= { mTnwTraps 1 }
+
+mTnwNodeLeft  NOTIFICATION-TYPE
+   OBJECTS { mTnwNetNodeID, 
+      mTnwNetRedIP, 
+      mTnwNetBlackIP }
+   STATUS     current
+   DESCRIPTION 
+      "Indicates a node left the M-TNW network."
+   ::= { mTnwTraps 2 }
+
+mTnwConformance OBJECT IDENTIFIER ::= { mTnw 32 }
+
+mTnwGroups OBJECT IDENTIFIER ::= { mTnwConformance 1 }
+
+currentObjectGroup OBJECT-GROUP
+         OBJECTS { mTnwFrequency,
+            mTnwUpTime,
+            mTnwSlotId,
+            mTnwNodesInNet,
+            mTnwOneHopNeighbors,
+            mTnwDataPacketsSent,
+            mTnwDataPacketsReceived,
+            mTnwDataPacketsRelayed,
+            mTnwTxDataPacketsDropped,
+            mTnwRxDataPacketsDropped,
+            mTnwMcastPacketsSent,
+            mTnwMcastPacketsReceived,
+            mTnwMcastPacketsRelayed,
+            mTnwTxMcastPacketsDropped,
+            mTnwRxMcastPacketsDropped,
+            mTnwVoicePacketsSent,
+            mTnwVoicePacketsReceived,
+            mTnwVoicePacketsRelayed,
+            mTnwTxVoicePacketsDropped,
+            mTnwRxVoicePacketsDropped,
+            mTnwBeaconPacketsSent,
+            mTnwBeaconPacketsReceived,
+            mTnwTransmitRate,
+            mTnwReceiveRate,
+            mTnwFlowPauseCount,
+            mTnwTransmitPower,
+            mTnwVSWR,
+            mTnwNetNodeID,
+            mTnwNetRedIP,
+            mTnwNetBlackIP,
+            mTnwNetHops,
+            mTnwNetWaveformID,
+            mTnwNetNextHopNode,
+            mTnwSendHostJoinedTrap,
+            mTnwSendHostLeftTrap }
+         STATUS current
+         DESCRIPTION
+            "RFCOM-MTNW-MIB OBJECT-GROUP."
+         ::= { mTnwGroups 1 }
+
+notificationsGroup NOTIFICATION-GROUP
+       NOTIFICATIONS { mTnwNodeJoined, mTnwNodeLeft }
+       STATUS        current
+       DESCRIPTION
+               "RFCOM-MTNW-MIB NOTIFICATION-GROUP."
+      ::= { mTnwGroups 2 }
+
+      mTnwCompliances OBJECT IDENTIFIER ::= { mTnwConformance 2 }
+
+      basicCompliance MODULE-COMPLIANCE
+         STATUS current
+         DESCRIPTION
+            "RFCOM-MTNW-MIB MODULE-COMPLIANCE."
+         MODULE -- this module
+            MANDATORY-GROUPS { currentObjectGroup, notificationsGroup }
+         ::= { mTnwCompliances 1 }
+END

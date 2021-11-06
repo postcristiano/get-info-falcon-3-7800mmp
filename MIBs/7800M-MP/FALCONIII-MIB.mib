@@ -1,0 +1,1084 @@
+--************************************************************************************
+-- This MIB module defines the Harris Falcon III Platform MIB.
+--
+-- Description: The Falcon III module contains the parameters that
+--              provide status of the Harris Falcon III Platform.
+-- 
+-- THIS INFORMATION IS ITAR CONTROLLED
+--
+-- THIS INFORMATION IS CONTROLLED BY THE U.S. DEPARTMENT OF STATE INTERNATIONAL TRAFFIC 
+-- IN ARMS REGULATIONS (ITAR), 22CFR 120-130, AND CANNOT BE EXPORTED FROM THE UNITED 
+-- STATES OR SHARED WITH A FOREIGN PERSON WITHOUT PRIOR APPROVAL FROM THE UNITED 
+-- STATES GOVERNMENT.
+-- 
+--************************************************************************************
+
+FALCONIII-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+    MODULE-IDENTITY, OBJECT-TYPE, OBJECT-IDENTITY, enterprises, Integer32,
+            NOTIFICATION-TYPE FROM SNMPv2-SMI
+	OBJECT-GROUP, MODULE-COMPLIANCE
+	        FROM SNMPv2-CONF
+    TEXTUAL-CONVENTION, DisplayString, TruthValue
+            FROM SNMPv2-TC;
+
+falconIII MODULE-IDENTITY
+   LAST-UPDATED "201212140322Z"
+   ORGANIZATION "Harris Corporation"
+   CONTACT-INFO "Harris Corporation 
+       Postal: RF Communications Division
+               1680 University Avenue
+               Rochester, NY 14610
+       Tel:    +1 585 244 5830
+       E-Mail: "
+   DESCRIPTION
+      "MIB for Harris Falcon III Family"
+   REVISION "201508190000Z"
+   DESCRIPTION
+	  "Added mcmp OID."	  
+   REVISION "201104130000Z"
+   DESCRIPTION "Revision 1.2"
+   
+   ::= { enterprises harris(290) css(3) rfcom(5) rfcomProducts(1) 2 }
+
+f3Platform      OBJECT IDENTIFIER ::= { falconIII 1 }
+mp117G          OBJECT IDENTIFIER ::= { f3Platform 1 }
+wbhh            OBJECT IDENTIFIER ::= { f3Platform 2 }
+rf7800m-mp      OBJECT IDENTIFIER ::= { f3Platform 3 }
+f3Common        OBJECT IDENTIFIER ::= { f3Platform 4 }
+rf7800m-hh      OBJECT IDENTIFIER ::= { f3Platform 5 }
+emr             OBJECT IDENTIFIER ::= { f3Platform 6 }
+e-spr           OBJECT IDENTIFIER ::= { f3Platform 7 }
+mcmp            OBJECT IDENTIFIER ::= { f3Platform 8 }
+f3Waveforms     OBJECT IDENTIFIER ::= { falconIII 2 }
+   
+--*****************************
+-- f3Common: a common MIB tree shared across Falcon III products
+--*****************************
+f3Identification   OBJECT-IDENTITY
+   STATUS current
+   DESCRIPTION
+      "Identifying information for a specific radio."
+   ::= {f3Common 1}
+
+f3Versions OBJECT-IDENTITY 
+   STATUS current
+   DESCRIPTION 
+      "This node holds variables that identify version
+      information for a Falcon3 radio."
+   ::= {f3Common 2}
+
+f3RadioSetup OBJECT-IDENTITY 
+   STATUS current
+   DESCRIPTION 
+      "This node holds variables pertenent to the setup
+       configuration of a Falcon3 radio."
+   ::= {f3Common 3}
+
+f3PowerInfo OBJECT-IDENTITY 
+   STATUS current
+   DESCRIPTION 
+      "This node holds variables pertaining to battery and power information."
+   ::= {f3Common 4}
+   
+f3PostResults OBJECT-IDENTITY 
+   STATUS current
+   DESCRIPTION 
+      "This node holds variables pertaining to the power on self test results."
+   ::= {f3Common 5}
+   
+f3TemperatureInfo OBJECT-IDENTITY 
+   STATUS current
+   DESCRIPTION 
+      "This node holds variables pertaining to temperature information."
+   ::= {f3Common 6}
+   
+f3SnmpTraps OBJECT-IDENTITY 
+   STATUS current
+   DESCRIPTION 
+      "This node holds variables pertaining to snmp traps."
+   ::= {f3Common 7}
+
+f3Conformance OBJECT-IDENTITY
+   STATUS current
+   DESCRIPTION
+      "Organizational node for conformance objects."
+   ::= {f3Common 8}
+
+--*****************************
+-- f3Identification Group
+--*****************************
+f3IdentModelDesc OBJECT-TYPE
+   SYNTAX DisplayString
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The name of the Falcon 3 radio model."
+   ::= {f3Identification 1}
+
+f3IdentNomenclature OBJECT-TYPE
+   SYNTAX DisplayString
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The military nomenclature of the radio."
+   ::= {f3Identification 2}
+
+f3IdentSerialNumber OBJECT-TYPE
+   SYNTAX DisplayString
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The vendor-assigned serial number of the radio."
+   ::= {f3Identification 3}
+
+--*****************************
+-- f3HardwareVersions Group
+--*****************************
+f3HardwareVersions OBJECT-IDENTITY 
+   STATUS current
+   DESCRIPTION 
+      "This node is intended to hold a table identifying
+       Falcon III radio hardware version information."
+   ::= {f3Versions 1}
+
+f3HardwareVersionTable  OBJECT-TYPE
+   SYNTAX SEQUENCE OF F3HardwareVersionFields
+   MAX-ACCESS not-accessible
+   STATUS current
+   DESCRIPTION 
+      "This table contains information about the hardware
+      modules installed in the radio and their versions."
+      ::= {f3HardwareVersions 1}
+
+f3HardwareVersionEntry  OBJECT-TYPE
+   SYNTAX F3HardwareVersionFields
+   MAX-ACCESS not-accessible
+   STATUS current
+   DESCRIPTION "This is the row entry of the hardware version table."
+   INDEX { f3HwVersionIndex }
+   ::= {f3HardwareVersionTable 1}
+   
+F3HardwareVersionFields ::=
+   SEQUENCE {
+      f3HwVersionIndex  	  Integer32,
+      f3HwPartName      	  DisplayString,
+      f3HwPartNumber    	  DisplayString,
+      f3HwVersionDate   	  DisplayString,
+      f3HwRevision      	  DisplayString,
+	  f3HwPLRevision		  DisplayString,
+	  f3HwPWBRevision   	  DisplayString,
+	  f3HwModuleId	          DisplayString,
+	  f3HwEngrRelease	      DisplayString,
+	  f3HwSerialNumber	      DisplayString,
+	  f3HwEco	              DisplayString,
+	  f3HwTestedBy	          DisplayString,
+	  f3HwFpgaPartRev	      DisplayString,
+	  f3HwIctResult	          DisplayString,
+	  f3HwFuncTestResult      DisplayString,
+	  f3HwUpflowStatus	      DisplayString,
+	  f3HwSubAssyMergedStatus DisplayString,
+	  f3HwTestEngNotes	      DisplayString
+   }
+   
+   f3HwVersionIndex OBJECT-TYPE
+      SYNTAX Integer32(1..50)
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION "The index into the table."
+      ::= {f3HardwareVersionEntry 1}
+      
+   f3HwPartName OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION "A descriptive name of the part, may be blank."
+      ::= {f3HardwareVersionEntry 2}
+      
+   f3HwPartNumber OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION "The Harris part number."
+      ::= {f3HardwareVersionEntry 3}
+      
+   f3HwVersionDate OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION "The revision release date. May be blank."
+      ::= {f3HardwareVersionEntry 4}
+      
+   f3HwRevision OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION "The revision of hardware that is installed."
+      ::= {f3HardwareVersionEntry 5}
+	  
+	f3HwPLRevision OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION "The PL revision of hardware that is installed."
+      ::= {f3HardwareVersionEntry 6}
+	  
+	f3HwPWBRevision OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION "The PWB revision of hardware that is installed."
+      ::= {f3HardwareVersionEntry 7}	
+	  
+	f3HwModuleId OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION "The module id of hardware that is installed, may be blank."
+      ::= {f3HardwareVersionEntry 8}
+
+	f3HwEngrRelease OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION "The engineering release of hardware that is installed, may be blank."
+      ::= {f3HardwareVersionEntry 9}
+
+	f3HwSerialNumber OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION "The serial number of hardware that is installed, may be blank."
+      ::= {f3HardwareVersionEntry 10}
+
+	f3HwEco OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION "The eco of hardware that is installed, may be blank."
+      ::= {f3HardwareVersionEntry 11}
+
+	f3HwTestedBy OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION "The tested by field of hardware that is installed, may be blank."
+      ::= {f3HardwareVersionEntry 12}	
+      
+	f3HwFpgaPartRev OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION "The fpga part revision of hardware that is installed, may be blank."
+      ::= {f3HardwareVersionEntry 13}  
+
+	f3HwIctResult OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION "The ict result of hardware that is installed, may be blank."
+      ::= {f3HardwareVersionEntry 14}
+
+	f3HwFuncTestResult OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION "The func test result of hardware that is installed, may be blank."
+      ::= {f3HardwareVersionEntry 15}
+
+	f3HwUpflowStatus OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION "The upflow status of hardware that is installed, may be blank."
+      ::= {f3HardwareVersionEntry 16}
+
+	f3HwSubAssyMergedStatus OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION "The sub assembly merged status of hardware that is installed, may be blank."
+      ::= {f3HardwareVersionEntry 17}
+
+	f3HwTestEngNotes OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION "The test engineering notes of hardware that is installed, may be blank."
+      ::= {f3HardwareVersionEntry 18}
+	  
+--*****************************
+-- f3SoftwareVersions Group
+--*****************************
+f3SoftwareVersions OBJECT-IDENTITY 
+   STATUS current
+   DESCRIPTION 
+      "This node is intended to hold a table identifying
+       Falcon III radio software version information."
+   ::= {f3Versions 2}
+
+f3SoftwareVersionTable  OBJECT-TYPE
+   SYNTAX SEQUENCE OF F3SoftwareVersionFields
+   MAX-ACCESS not-accessible
+   STATUS current
+   DESCRIPTION 
+      "This table contains information about the software
+      modules installed in the radio and their versions."
+      ::= {f3SoftwareVersions 1}
+
+f3SoftwareVersionEntry  OBJECT-TYPE
+   SYNTAX F3SoftwareVersionFields
+   MAX-ACCESS not-accessible
+   STATUS current
+   DESCRIPTION "This is the row entry of the software version table."
+   INDEX { f3SwVersionIndex }
+   ::= {f3SoftwareVersionTable 1}
+   
+F3SoftwareVersionFields ::=
+   SEQUENCE {
+      f3SwVersionIndex        Integer32,
+      f3SwPartName            DisplayString,
+      f3SwPartNumber          DisplayString,
+      f3SwVersionDate         DisplayString,
+      f3SwRevision            DisplayString,
+	  f3SwOptId               DisplayString,
+	  f3SwUuid                DisplayString,
+	  f3SwExpectedWfRevision  DisplayString,
+	  f3SwMismatch            TruthValue,
+	  f3SwOptional            TruthValue
+   }
+   
+   f3SwVersionIndex OBJECT-TYPE
+      SYNTAX Integer32(1..50)
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION "The index into the table."
+      ::= {f3SoftwareVersionEntry 1}
+      
+   f3SwPartName OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION "A descriptive name of the part. May be blank."
+      ::= {f3SoftwareVersionEntry 2}
+      
+   f3SwPartNumber OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION "The Harris part number."
+      ::= {f3SoftwareVersionEntry 3}
+      
+   f3SwVersionDate OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION "The revision release date, may be blank."
+      ::= {f3SoftwareVersionEntry 4}
+      
+   f3SwRevision OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION "The revision of software that is installed."
+      ::= {f3SoftwareVersionEntry 5}
+	  
+   f3SwOptId OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION "The revision of software that is installed."
+      ::= {f3SoftwareVersionEntry 6}	
+	  
+   f3SwUuid OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION "The revision of software that is installed."
+      ::= {f3SoftwareVersionEntry 7}
+	  
+   f3SwExpectedWfRevision OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION "The revision of software that is installed."
+      ::= {f3SoftwareVersionEntry 8}
+	  
+   f3SwMismatch OBJECT-TYPE
+      SYNTAX TruthValue
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION "The revision of software that is installed."
+      ::= {f3SoftwareVersionEntry 9}
+	  
+   f3SwOptional OBJECT-TYPE
+      SYNTAX TruthValue
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION "The revision of software that is installed."
+      ::= {f3SoftwareVersionEntry 10}
+   
+
+--*****************************
+-- f3OptionsInstalled Group
+--*****************************
+f3OptionsInstalled OBJECT-IDENTITY 
+   STATUS current
+   DESCRIPTION 
+      "This node is intended to hold a table identifying 
+       Falcon III radio options that have been installed."
+   ::= {f3RadioSetup 1}
+
+f3OptionsInstalledTable  OBJECT-TYPE
+   SYNTAX SEQUENCE OF F3OptionsInstalledFields
+   MAX-ACCESS not-accessible
+   STATUS current
+   DESCRIPTION 
+      "This is a table listing the options installed in the radio."
+   ::= {f3OptionsInstalled 1}
+
+f3OptionsInstalledEntry   OBJECT-TYPE
+   SYNTAX F3OptionsInstalledFields
+   MAX-ACCESS not-accessible
+   STATUS current
+   DESCRIPTION
+      "This is the row entry of the F3 Options Installed Table."
+   INDEX { f3OptionIndex }
+   ::= {f3OptionsInstalledTable 1} 
+
+F3OptionsInstalledFields ::=
+   SEQUENCE {
+        f3OptionIndex      Integer32,
+	    f3OptionName       DisplayString,
+        f3OptionEnabled    TruthValue,
+		f3OptionPartNumber DisplayString,
+		f3OptionMismatch   TruthValue
+	}
+
+f3OptionIndex OBJECT-TYPE
+   SYNTAX Integer32(1..50)
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The index of an installed option."
+   ::= {f3OptionsInstalledEntry 1}
+   
+f3OptionName OBJECT-TYPE
+   SYNTAX DisplayString
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The name of an installed option."
+   ::= {f3OptionsInstalledEntry 2}
+
+f3OptionEnabled OBJECT-TYPE
+   SYNTAX TruthValue
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "A flag indicating if the option is enabled."
+   ::= {f3OptionsInstalledEntry 3}
+   
+f3OptionPartNumber OBJECT-TYPE
+   SYNTAX DisplayString
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The part number of an installed option."
+   ::= {f3OptionsInstalledEntry 4}
+   
+f3OptionMismatch OBJECT-TYPE
+   SYNTAX TruthValue
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The bool value of mismatch of an installed option."
+   ::= {f3OptionsInstalledEntry 5}
+
+--*****************************
+-- f3MissionPlans Group
+--*****************************
+f3MissionPlans OBJECT-IDENTITY 
+   STATUS current
+   DESCRIPTION 
+      "This node is intended to hold a table identifying 
+       Falcon III radio mission plans that have been installed."
+   ::= {f3RadioSetup 2}
+
+f3MissionPlansTable  OBJECT-TYPE
+   SYNTAX  SEQUENCE OF F3MissionPlansFields
+   MAX-ACCESS  not-accessible
+   STATUS  current
+   DESCRIPTION 
+      "This is a table listing the mission plans installed in the radio."
+   ::= {f3MissionPlans 1}
+
+f3MissionPlansEntry   OBJECT-TYPE
+   SYNTAX F3MissionPlansFields
+   MAX-ACCESS not-accessible
+   STATUS current
+   DESCRIPTION
+      "This is the row entry of the F3 Mission Plans Table."
+   INDEX { f3MissionPlanIndex }
+   ::= {f3MissionPlansTable 1} 
+
+F3MissionPlansFields  ::=
+   SEQUENCE {
+          f3MissionPlanIndex Integer32,
+	    f3MissionPlanName DisplayString
+	}
+
+f3MissionPlanIndex OBJECT-TYPE
+   SYNTAX Integer32(1..1000)
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The index of an installed mission plan."
+   ::= {f3MissionPlansEntry 1}
+   
+f3MissionPlanName OBJECT-TYPE
+   SYNTAX DisplayString
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The name of an installed mission plan."
+   ::= {f3MissionPlansEntry 2}
+
+f3MissionPlanSelectedIndex OBJECT-TYPE
+   SYNTAX Integer32(0..1000)
+   MAX-ACCESS read-write
+   STATUS current
+   DESCRIPTION "The table entry index of the current selected mission plan.
+                With a value of 0 indicating no plan has yet been selected."
+   ::= {f3MissionPlans 2}
+   
+f3MissionPlanActivationStatus OBJECT-TYPE
+   SYNTAX DisplayString
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The status of the last mission plan activation attempt."
+   ::= {f3MissionPlans 3}
+
+--*****************************
+-- f3SysPresets Group
+--*****************************
+f3SysPresets OBJECT-IDENTITY 
+   STATUS current
+   DESCRIPTION 
+      "This node is intended to hold a table identifying 
+       Falcon III radio presets that have been defined."
+   ::= {f3RadioSetup 3}
+
+f3SysPresetsTable  OBJECT-TYPE
+   SYNTAX  SEQUENCE OF F3SysPresetsFields
+   MAX-ACCESS  not-accessible
+   STATUS  current
+   DESCRIPTION 
+      "This is a table listing the system presets defined in the radio."
+   ::= {f3SysPresets 1}
+
+f3SysPresetsEntry   OBJECT-TYPE
+   SYNTAX F3SysPresetsFields
+   MAX-ACCESS not-accessible
+   STATUS current
+   DESCRIPTION
+      "This is the row entry of the F3 Presets Table."
+   INDEX   { f3SysPresetNumber }
+   ::= {f3SysPresetsTable 1} 
+
+F3SysPresetsFields  ::=
+   SEQUENCE {
+		f3SysPresetNumber               Integer32,
+		f3SysPresetName                 DisplayString,
+		f3SysPresetDescription          DisplayString,
+		f3SysPresetEnabled              TruthValue,
+		f3SysPresetWfName               DisplayString,
+		f3SysPresetWfPresetNumber       Integer32
+	}
+
+f3SysPresetNumber OBJECT-TYPE
+   SYNTAX Integer32(1..99)
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The system preset number."
+   ::= {f3SysPresetsEntry 1}
+
+f3SysPresetName OBJECT-TYPE
+   SYNTAX DisplayString
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The name of the preset."
+   ::= {f3SysPresetsEntry 2}
+
+f3SysPresetDescription OBJECT-TYPE
+   SYNTAX DisplayString
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The short textal description of the preset."
+   ::= {f3SysPresetsEntry 3}
+
+f3SysPresetEnabled OBJECT-TYPE
+   SYNTAX TruthValue
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "Indicates whether the preset is enabled."
+   ::= {f3SysPresetsEntry 4}
+
+f3SysPresetWfName OBJECT-TYPE
+   SYNTAX DisplayString
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The name of the waveform associated with the preset."
+   ::= {f3SysPresetsEntry 5}
+
+f3SysPresetWfPresetNumber OBJECT-TYPE
+   SYNTAX Integer32(1..99)
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The associated waveform preset number with the system preset."
+   ::= {f3SysPresetsEntry 6}
+
+f3SysPresetSelectedNumber OBJECT-TYPE
+   SYNTAX Integer32(0..99)
+   MAX-ACCESS read-write
+   STATUS current
+   DESCRIPTION "The number of the current selected system preset.
+   A value of zero indicates no preset selected."
+   ::= {f3SysPresets 2}
+   
+f3SysPresetActiveNumber OBJECT-TYPE
+   SYNTAX Integer32(0..99)
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The number of the current active system preset.
+   A value of zero indicates no preset is active."
+   ::= {f3SysPresets 3}
+
+f3SysPresetSelectionStatus OBJECT-TYPE
+   SYNTAX DisplayString
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The status of the last system preset selection."
+   ::= {f3SysPresets 4}
+
+f3SysPresetSelectedWfName OBJECT-TYPE
+   SYNTAX DisplayString
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The name of the current system presets waveform."
+   ::= {f3SysPresets 5}
+   
+--*****************************
+-- f3PostResults Group
+--*****************************
+f3PostResultsTable  OBJECT-TYPE
+   SYNTAX      SEQUENCE OF F3PostResultsTableEntry
+   MAX-ACCESS  not-accessible
+   STATUS      current
+   DESCRIPTION
+      "A list of results from the power on self test."
+   ::= { f3PostResults 1 }
+
+f3PostResultsTableEntry OBJECT-TYPE
+   SYNTAX      F3PostResultsTableEntry
+   MAX-ACCESS  not-accessible
+   STATUS      current
+   DESCRIPTION
+      "Results from the power on self test"
+   INDEX    { f3PostResultsBitModule }
+   ::= { f3PostResultsTable 1 }
+
+F3PostResultsTableEntry ::= SEQUENCE 
+{
+   f3PostResultsBitModule    DisplayString,
+   f3PostResultsSuccess      TruthValue,
+   f3PostResultsFaultCode    Integer32,
+   f3PostResultsFaultString  DisplayString
+}
+   
+f3PostResultsBitModule OBJECT-TYPE
+		SYNTAX  	DisplayString
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION    
+			 "The test's module name."
+		::= { f3PostResultsTableEntry 1 }
+		
+f3PostResultsSuccess OBJECT-TYPE
+		SYNTAX  	TruthValue
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION    
+			 "The test's success or failure."
+		::= { f3PostResultsTableEntry 2 }
+		
+f3PostResultsFaultCode OBJECT-TYPE
+		SYNTAX  	Integer32 (0..999)
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION    
+			 "The test's fault code."
+		::= { f3PostResultsTableEntry 3 }
+		
+f3PostResultsFaultString OBJECT-TYPE
+		SYNTAX  	DisplayString
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION    
+			 "The test's fault string."
+		::= { f3PostResultsTableEntry 4 }
+
+--*****************************
+-- f3PowerInfo Group
+--*****************************
+f3TxPowerLevel OBJECT-TYPE
+   SYNTAX INTEGER { low(1), medium(2), high(3), user(4) }
+   MAX-ACCESS read-write
+   STATUS current
+   DESCRIPTION "The current tx power level."
+   ::= {f3PowerInfo 1}
+   
+f3TxPowerValue OBJECT-TYPE
+   SYNTAX Integer32
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The current db from full power."
+   ::= {f3PowerInfo 2}
+   
+f3TxPowerInWatts OBJECT-TYPE
+   SYNTAX DisplayString
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The current tx power in watts."
+   ::= {f3PowerInfo 3}
+
+f3VauConnected OBJECT-TYPE
+   SYNTAX TruthValue
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "If a vau is connected."
+   ::= {f3PowerInfo 4}
+   
+f3VauType OBJECT-TYPE
+   SYNTAX INTEGER { noExtPa(1),
+					falcon3VaaRtp(2),
+					falcon3VaaHvm(3),
+					falcon3VaaMp(4),
+					falcon3Vrc103(5),
+					falcon3Vrc110a(6),
+					falcon3VaaMaxEntry(7) }
+
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The current type of vau."
+   ::= {f3PowerInfo 5}
+   
+f3VauOptions OBJECT-TYPE
+   SYNTAX Integer32
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The current options for the vau."
+   ::= {f3PowerInfo 6}
+   
+f3VauSecondMpPresent OBJECT-TYPE
+   SYNTAX TruthValue
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "If a second manpack is present."
+   ::= {f3PowerInfo 7}
+
+f3BatHubCapacity OBJECT-TYPE
+   SYNTAX Integer32
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The current battery hub capacity days remaining."
+   ::= {f3PowerInfo 8}
+   
+f3BatType OBJECT-TYPE
+   SYNTAX INTEGER { external(1),
+					lithium(2),
+					nicadOther(3),
+					gasGaugeLithium(4),
+					gasGaugeNicad(5),
+					unknown(6),
+					primary(7),
+					rechargeable(8),
+					smart(9),
+					extPa(10) }				
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The current battery type."
+   ::= {f3PowerInfo 9}
+   
+f3BatStatus OBJECT-TYPE
+   SYNTAX INTEGER { tooLow(1),
+					low(2),
+					nominal(3),
+					tooHigh(4),
+					vaaAttached(5) }
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The current battery status."
+   ::= {f3PowerInfo 10}
+   
+f3BatCharge OBJECT-TYPE
+   SYNTAX Integer32
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The current battery charge."
+   ::= {f3PowerInfo 11}
+   
+f3BatVoltage OBJECT-TYPE
+   SYNTAX Integer32
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The current battery voltage."
+   ::= {f3PowerInfo 12}
+   
+f3BatTemp OBJECT-TYPE
+   SYNTAX Integer32
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The current battery temperature in celcius."
+   ::= {f3PowerInfo 13}
+   
+f3BatVaaSysVoltage OBJECT-TYPE
+   SYNTAX Integer32
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The current vaa system voltage (if present) in celcius."
+   ::= {f3PowerInfo 14}
+   
+--*****************************
+-- f3TemperatureInfo Group
+--*****************************
+f3PaTemp OBJECT-TYPE
+   SYNTAX Integer32
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The current PA board temperature in celcius."
+   ::= {f3TemperatureInfo 1}
+   
+f3DigTemp OBJECT-TYPE
+   SYNTAX Integer32
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The current digital board temperature in celcius."
+   ::= {f3TemperatureInfo 2}
+   
+--*****************************
+-- f3MsffSetup Group
+--*****************************
+f3MsffSetup OBJECT-IDENTITY 
+   STATUS current
+   DESCRIPTION 
+      "This node is intended to hold information pertaining to
+	  the setup and activation of a multi-station fill file."
+   ::= {f3RadioSetup 4}
+   
+f3CurrentMsff OBJECT-TYPE
+   SYNTAX DisplayString
+   MAX-ACCESS read-write
+   STATUS current
+   DESCRIPTION "The current selected multi-station fill file for this radio."
+   ::= {f3MsffSetup 1}
+   
+f3MsffStationSelector OBJECT-TYPE
+   SYNTAX Integer32
+   MAX-ACCESS read-write
+   STATUS current
+   DESCRIPTION "The selected station within the current msff
+			    Note:  Setting this object activates the plan."
+   ::= {f3MsffSetup 2}
+   
+f3MsffTable  OBJECT-TYPE
+   SYNTAX  SEQUENCE OF F3MsffFields
+   MAX-ACCESS  not-accessible
+   STATUS  current
+   DESCRIPTION 
+      "This is a table listing the stations within a msff."
+   ::= {f3MsffSetup 3}
+
+f3MsffTableEntry   OBJECT-TYPE
+   SYNTAX F3MsffFields
+   MAX-ACCESS not-accessible
+   STATUS current
+   DESCRIPTION
+      "This is the row entry of the F3 Msff Table."
+   INDEX { f3MsffStationIndex }
+   ::= {f3MsffTable 1} 
+
+F3MsffFields  ::=
+   SEQUENCE {
+			    f3MsffStationIndex Integer32,
+				f3MsffStationName DisplayString
+			}
+
+f3MsffStationIndex OBJECT-TYPE
+   SYNTAX Integer32(1..1000)
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The index of a station within the msff"
+   ::= {f3MsffTableEntry 1}
+   
+f3MsffStationName OBJECT-TYPE
+   SYNTAX DisplayString
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The name of a station within the msff."
+   ::= {f3MsffTableEntry 2}
+   
+   
+--*****************************
+-- f3SnmpTraps Group
+--*****************************
+f3TrapBatteryLevelEnabled OBJECT-TYPE
+   SYNTAX TruthValue
+   MAX-ACCESS read-write
+   STATUS current
+   DESCRIPTION "If this node should send a trap when its battery
+				level gets too low."
+   ::= {f3SnmpTraps 1}
+   
+f3TrapHwFaultEnabled OBJECT-TYPE
+   SYNTAX TruthValue
+   MAX-ACCESS read-write
+   STATUS current
+   DESCRIPTION "If this node should send a trap when a hardware
+				fault is detected."
+   ::= {f3SnmpTraps 2}
+   
+f3TrapHwFaultComponent OBJECT-TYPE
+   SYNTAX DisplayString
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The component of the last detected hardware fault."
+   ::= {f3SnmpTraps 3}
+   
+f3TrapHwFaultText OBJECT-TYPE
+   SYNTAX DisplayString
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "The description of the last detected hardware fault."
+   ::= {f3SnmpTraps 4}
+   
+f3SnmpTrapTypes OBJECT IDENTIFIER ::= { f3SnmpTraps 5 }
+
+f3SnmpTrapBatteryLevel NOTIFICATION-TYPE
+   OBJECTS { f3BatHubCapacity,
+			 f3BatType, 
+			 f3BatStatus, 
+			 f3BatCharge, 
+			 f3BatVoltage, 
+			 f3BatTemp, 
+			 f3BatVaaSysVoltage }	
+   STATUS  current
+   DESCRIPTION
+           "Indicates a node's battery level has become too low."
+   ::= { f3SnmpTrapTypes 1 }
+   
+f3SnmpTrapHwFault NOTIFICATION-TYPE
+   OBJECTS { f3TrapHwFaultComponent,
+			 f3TrapHwFaultText }	
+   STATUS  current
+   DESCRIPTION
+           "Indicates a node has detected a hardware fault."
+   ::= { f3SnmpTrapTypes 2 }
+   
+--*****************************
+-- f3Conformance: Conformance Objects
+--*****************************
+f3ConformanceGroups OBJECT-IDENTITY
+   STATUS current
+   DESCRIPTION "Organizational node for conformance groups."
+   ::= {f3Conformance 1}
+
+f3IdentificationGroup OBJECT-GROUP
+   OBJECTS
+   {
+      f3IdentModelDesc,
+      f3IdentNomenclature,
+      f3IdentSerialNumber
+   }
+   STATUS current
+   DESCRIPTION "Group of variables that uniquely identify the radio."
+   ::= {f3ConformanceGroups 1}
+
+f3HwVersionsGroup OBJECT-GROUP
+   OBJECTS
+   {
+      f3HwVersionIndex,
+      f3HwPartName,
+      f3HwPartNumber,
+      f3HwVersionDate,
+      f3HwRevision
+   }
+   STATUS current
+   DESCRIPTION "Group of variables that show installed hardware."
+   ::= {f3ConformanceGroups 2}
+
+f3SwVersionsGroup OBJECT-GROUP
+   OBJECTS
+   {
+      f3SwVersionIndex,
+      f3SwPartName,
+      f3SwPartNumber,
+      f3SwVersionDate,
+      f3SwRevision
+   }
+   STATUS current
+   DESCRIPTION "Group of variables that show installed software."
+   ::= {f3ConformanceGroups 3}
+
+f3OptionsGroup OBJECT-GROUP
+   OBJECTS
+   {
+      f3OptionIndex,
+      f3OptionName,
+      f3OptionEnabled
+   }
+   STATUS current
+   DESCRIPTION "Group of variables that describe installed options."
+   ::= {f3ConformanceGroups 4}
+
+f3MissionPlansGroup OBJECT-GROUP
+   OBJECTS
+   {
+      f3MissionPlanIndex,
+      f3MissionPlanName,
+      f3MissionPlanSelectedIndex,
+      f3MissionPlanActivationStatus
+   }
+   STATUS current
+   DESCRIPTION "Group of variables that define mission plans."
+   ::= {f3ConformanceGroups 5}
+
+f3SysPresetsGroup OBJECT-GROUP
+   OBJECTS
+   {
+      f3SysPresetNumber,
+      f3SysPresetName,
+      f3SysPresetDescription,
+      f3SysPresetEnabled,
+      f3SysPresetWfName,
+      f3SysPresetWfPresetNumber,
+      f3SysPresetSelectedNumber,
+      f3SysPresetActiveNumber,
+      f3SysPresetSelectionStatus,
+      f3SysPresetSelectedWfName
+   }
+   STATUS current
+   DESCRIPTION "Group of variables that show the installed presets
+       and the last activation status."
+   ::= {f3ConformanceGroups 6}
+   
+f3Compliance MODULE-COMPLIANCE
+   STATUS current
+   DESCRIPTION "Specification of mandatory and non-mandatory
+	 MIB object."
+   MODULE
+   MANDATORY-GROUPS
+     {
+	   f3IdentificationGroup,
+       f3HwVersionsGroup,
+       f3SwVersionsGroup,
+       f3MissionPlansGroup,
+       f3SysPresetsGroup
+	 }
+
+  GROUP f3OptionsGroup
+  DESCRIPTION "A non-mandatory group."
+  ::= {f3Conformance 2}
+   
+END

@@ -1,0 +1,601 @@
+--************************************************************************************
+-- This MIB module defines the Harris RF Communications GPS MIB.
+--
+-- Description: The RF GPS Devices module contains the parameters that
+--              provide generic status of a Harris GPS.
+-- 
+-- 
+-- THIS INFORMATION IS ITAR CONTROLLED
+--
+-- THIS INFORMATION IS CONTROLLED BY THE U.S. DEPARTMENT OF STATE INTERNATIONAL TRAFFIC 
+-- IN ARMS REGULATIONS (ITAR), 22CFR 120-130, AND CANNOT BE EXPORTED FROM THE UNITED 
+-- STATES OR SHARED WITH A FOREIGN PERSON WITHOUT PRIOR APPROVAL FROM THE UNITED 
+-- STATES GOVERNMENT.
+--
+--************************************************************************************
+
+RFGPS-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+	MODULE-IDENTITY, OBJECT-TYPE, Integer32,
+    enterprises, IpAddress, mib-2, NOTIFICATION-TYPE FROM SNMPv2-SMI
+    TEXTUAL-CONVENTION, DisplayString, AutonomousType, TruthValue    FROM SNMPv2-TC
+    MODULE-COMPLIANCE, OBJECT-GROUP,
+    NOTIFICATION-GROUP                               FROM SNMPv2-CONF
+    snmpTraps                                        FROM SNMPv2-MIB
+	rfcomDevices 									 FROM RFCOMDEVICES-MIB;
+	
+rfGps MODULE-IDENTITY
+   LAST-UPDATED "201102150000Z"
+   ORGANIZATION "Harris Corporation"
+   CONTACT-INFO "Harris RFCD (585) 244-5830"
+   DESCRIPTION
+      "MIB for Harris RF GPS Devices"
+   ::= { rfcomDevices 1 } 
+   
+
+--    Rev 1.0   15 Feb 2011
+-- Initial revision.
+
+-- The mib is setup in subsections that mirror their respective ascii commands 
+-- Note: not all subsections are perfect mirrors of their ascii counterparts
+--       as some objects have been added for completeness.  
+   
+--************************************************************************************
+-- Gps Info subsection
+--************************************************************************************
+
+gpsState OBJECT-TYPE
+	SYNTAX  INTEGER   { notInstalled(1),
+					    disabled(2),
+					    searching(3),
+					    tracking(4),
+					    sleepingGoodSignal(5),
+					    sleepingNoSignal(6),
+					    resyncing(7),
+					    internalPassthru(8), 
+					    positionAvailable(9),
+					    disconnected(10),
+					    detected(11),
+					    notReported(12),
+					    testingProgress(13) }
+						
+	MAX-ACCESS  read-only
+	STATUS  current
+	DESCRIPTION    
+		 "This specifies the internal state of the gps subsystem."
+	::= { rfGps 1 }    
+	
+gpsPositionPart1 OBJECT-TYPE
+		SYNTAX  	OCTET STRING
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION    
+			 "Contents depend upon the selected Position Format."
+		::= { rfGps 2 }
+
+gpsPositionPart2 OBJECT-TYPE
+		SYNTAX  	OCTET STRING
+		MAX-ACCESS  read-only
+		STATUS 		current
+		DESCRIPTION    
+			 "Contents depend upon the selected Position Format."
+		::= { rfGps 3 }
+		
+gpsLatitude OBJECT-TYPE
+		SYNTAX  	OCTET STRING
+		MAX-ACCESS  read-only
+		STATUS 		current
+		DESCRIPTION    
+			 "The current latitude in radians."
+		::= { rfGps 4 }		
+   
+gpsLongitude OBJECT-TYPE
+		SYNTAX  	OCTET STRING
+		MAX-ACCESS  read-only
+		STATUS 		current
+		DESCRIPTION    
+			 "The current longitude in radians."
+		::= { rfGps 5 }	
+		
+gpsAltitude OBJECT-TYPE
+		SYNTAX  	OCTET STRING
+		MAX-ACCESS  read-only
+		STATUS 		current
+		DESCRIPTION    
+			 "Geographical altitude."
+		::= { rfGps 6 }	
+		
+gpsSeperation OBJECT-TYPE
+		SYNTAX  	OCTET STRING
+		MAX-ACCESS  read-only
+		STATUS 		current
+		DESCRIPTION    
+			 "Geoid seperation in meters."
+		::= { rfGps 7 }		
+
+gpsHeading OBJECT-TYPE
+		SYNTAX  	OCTET STRING
+		MAX-ACCESS  read-only
+		STATUS 		current
+		DESCRIPTION    
+			 "Magnetic heading."
+		::= { rfGps 8 }	
+
+gpsVelocity OBJECT-TYPE
+		SYNTAX  	OCTET STRING
+		MAX-ACCESS  read-only
+		STATUS 		current
+		DESCRIPTION    
+			 "Current speed."
+		::= { rfGps 9 }		
+
+gpsFigureOfMerit OBJECT-TYPE
+		SYNTAX  	Integer32
+		MAX-ACCESS  read-only
+		STATUS 		current
+		DESCRIPTION    
+			 "Returns the last reported figure of merit (MPE-S only)."
+		::= { rfGps 10 }		
+
+gpsTimeFigureOfMerit OBJECT-TYPE
+		SYNTAX  	Integer32
+		MAX-ACCESS  read-only
+		STATUS 		current
+		DESCRIPTION    
+			 "Returns the last reported time figure of merit."
+		::= { rfGps 11 }	
+
+gpsEstimatedPositionError OBJECT-TYPE
+		SYNTAX  	OCTET STRING
+		MAX-ACCESS  read-only
+		STATUS 		current
+		DESCRIPTION    
+			 "Returns the last reported Estimated Position Error (MPE-S only)."
+		::= { rfGps 12 }	
+
+gpsMapDatum OBJECT-TYPE
+		SYNTAX  INTEGER   { wgs84(1), wgs72(2), adia(3), adib(4), adic(5), 
+							adid(6), adie(7), adif(8), adim(9), afg(10), aia(11),   
+						    aina(12), ainb(13), ama(14), ano(15), arfa(16), arfb(17), 
+						    arfc(18), arfd(19), arfe(20), arff(21), arfg(22), 
+						    arfh(23), arfm(24), arsa(25), arsb(26), arsm(27), 
+						    asc(28), asm(29), asq(30), atf(31), aua(32),   
+						    aug(33), bat(34), bbohm(35), ber(36), bid(37), boo(38),   
+						    bur(39), cac(40), cai(41), cao(42), cap(43), caz(44),   
+						    ccd(45), cge(46), chi(47), chu(48), coa(49), dal(50),   
+						    did(51), dob(52), eas(53), enw(54), est(55), eura(56), 
+						    eurb(57), eurc(58), eurd(59), eure(60), eurf(61), 
+						    eurg(62), eurh(63), euri(64), eurj(65), eurk(66), 
+						    eurl(67), eurm(68), eurs(69), eurt(70), eus(71),   
+						    fah(72), flo(73), fot(74), gaa(75), geo(76),   
+						    giz(77), gra(78), gse(79), gua(80), hen(81), her(82),   
+						    hit(83), hjo(84), hkd(85), htn(86), ibe(87), idn(88),   
+						    indb(89), indi(90), indp(91), inds(92), infa(93), 
+						    inga(94), ingb(95), inha(96), inha1(97), irl(98),   
+						    isg(99), ist(100), joh(101), kan(102), kea(103), keg(104),   
+						    kgs(105), kus(106), lcf(107), leh(108), lib(109), luza(110), 
+						    luzb(111), mas(112), mer(113), mid(114), mik(115),   
+						    mina(116), minb(117), mod(118), mpo(119), mvs(120),   
+						    naha(121), nahb(122), nahc(123), nap(124), nara(125), 
+						    narb(126), narc(127), nard(128), nare(129), narh(130), 
+						    nasa(131), nasb(132), nasc(133), nasd(134), nase(135), 
+						    nasf(136), nasg(137), nash(138), nasi(139), nasj(140), 
+						    nasl(141), nasn(142), naso(143), nasp(144), nasq(145), 
+						    nasr(146), nast(147), nasu(148), nasv(149), nasw(150), 
+						    nsd(151), oeg(152), ogba(153), ogbb(154), ogbc(155), 
+						    ogbd(156), ogbm(157), ohaa(158), ohab(159), ohac(160), 
+						    ohad(161), oham(162), ohia(163), ohib(164), ohic(165), 
+						    ohid(166), ohim(167), pha(168), pit(169), pln(170),   
+						    pos(171), prpa(172), prpb(173), prpc(174), prpd(175), 
+						    prpe(176), prpf(177), prpg(178), prph(179), prpm(180), 
+						    ptb(181), ptn(182), puk(183), pur(184), qat(185), quo(186),   
+						    reu(187), sae(188), sana(189), sanb(190), sanc(191), 
+						    sand(192), sane(193), sanf(194), sang(195), sanh(196), 
+						    sani(197), sanj(198), sank(199), sanl(200), sanm(201), sao(202), 
+						    sap(203), sck(204), sgm(205), shb(206), sir(207), soa(208),   
+						    spka(209), spkb(210), spkc(211), spkd(212), spke(213), 
+						    spkf(214), spkg(215), srl(216), tan(217), tdc(218),   
+						    til(219), tils(220), toya(221), toyb(222), toyb1(223),
+						    toyc(224), toym(225), trn(226), user1(227), user2(228),
+						    voi(229), vor(230), wak(231), yac(232), zan(233) }
+							
+		MAX-ACCESS  read-only
+		STATUS  current
+		DESCRIPTION    
+			 "Selects the Datum to be used when reporting position (from
+			 list)."
+		::= { rfGps 13 }
+		
+gpsKeyType OBJECT-TYPE
+		SYNTAX  	INTEGER { noKey(1), guvLoaded(2), cvmLoaded(3) }
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION    
+			 "Key availability for the MPE-S module."
+		::= { rfGps 14 }	
+
+gpsValidity OBJECT-TYPE
+		SYNTAX  	INTEGER { notAvailable(1), lastKnown(2), current(3) }
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION    
+			 "This entry specifes information in the gps status
+			  group is valid/up-to-date or not."
+		::= { rfGps 15 }		
+		
+gpsTimestamp OBJECT-TYPE
+		SYNTAX  	OCTET STRING
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION    
+			 "Contents depend upon the selected Date Format.
+			  E.g. time"
+		::= { rfGps 16 }
+
+--************************************************************************************
+-- Gps Cfg subsection
+--************************************************************************************
+
+gpsReceiverType OBJECT-TYPE
+		SYNTAX  	INTEGER   { disabled(1),
+						        internal(2),
+						        internalPassthrough(3),
+						        externalPlgrDagr(4) }
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION    
+			 "The gps receiver type."
+		::= { rfGps 17 }
+		
+gpsInternalType OBJECT-TYPE
+		SYNTAX  	INTEGER   { notInstalled(1),
+							    internalNavman(2),
+							    internalGramsaasm(3),
+							    internalFastrax(4) }
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION    
+			 "The gps internal receiver type."
+		::= { rfGps 18 }
+		
+gpsSleepTime OBJECT-TYPE
+		SYNTAX  	Integer32 (0..360)
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION    
+			 "This entry specifes in minutes how long the gps
+			 module should sleep every cycle.  0 means the gps
+			 module should be awake constantly."
+		::= { rfGps 19 }
+		
+gpsElevationBase OBJECT-TYPE
+		SYNTAX  	INTEGER { gebMeanSeaLevel(1), gebDatumBased(2) }
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION    
+			 "Selects the reference used when reporting elevation."
+		::= { rfGps 20 }
+		
+gpsPositionFormat OBJECT-TYPE
+		SYNTAX  	INTEGER   { lldm(1), lldms(2), utm(3), mgrsOld(4),
+						        mgrsNew(5) }
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION    
+			 "Selects the output format for position information.  Some
+			 formats do not apply for zodiac-equipped radios."
+		::= { rfGps 21 }
+		
+gpsLinearUnits OBJECT-TYPE
+		SYNTAX  	INTEGER { gluMetric(1), gluNautical(2), gluStatute(3) }
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION    
+			 "Selects the units to be used when reporting linear quantities
+			 such as speed."
+		::= { rfGps 22 }
+
+gpsAngularUnits OBJECT-TYPE
+		SYNTAX  	INTEGER   { gauDegreesGrid(1), gauDegreesMagnetic(2),
+						        gauDegreesTrue(3), gauMilGrid(4), gauMilMagnetic(5),
+						        gauMilTrue(6), gauStreckGrid(7), gauStreckMagnetic(8),
+						        gauStreckTrue(9) }
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION    
+			 "Selects the units to be used when reporting angular quantities
+			 such as direction."
+		::= { rfGps 23 }
+
+gpsGridDigits OBJECT-TYPE
+		SYNTAX  	INTEGER { two(2), four(4), six(6), eight(8), ten(10), twelve(12), fourteen(14) }
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION    
+			 "Selects the number of significant digits reported when
+			 using grid position formats."
+		::= { rfGps 24 }
+
+--************************************************************************************
+-- Gps Satellite subsection
+--************************************************************************************
+
+-- Table of Current Gps Satellites
+gpsSatelliteTable  OBJECT-TYPE
+   SYNTAX      SEQUENCE OF GpsSatelliteEntry
+   MAX-ACCESS  not-accessible
+   STATUS      current
+   DESCRIPTION
+      "A list of gps satellites visible to the radio."
+   ::= { rfGps 25 }
+
+-- Defines a single satellite entry in the satellite table
+gpsSatelliteEntry OBJECT-TYPE
+   SYNTAX      GpsSatelliteEntry
+   MAX-ACCESS  not-accessible
+   STATUS      current
+   DESCRIPTION
+      "Attributes of the gps satellites."
+   INDEX    { gpsSatellitePrn }
+   ::= { gpsSatelliteTable 1 }
+
+GpsSatelliteEntry ::= SEQUENCE 
+{
+   gpsSatellitePrn           Integer32,
+   gpsSatelliteElevation     Integer32,
+   gpsSatelliteAzim          Integer32,
+   gpsSatelliteSnr           Integer32,
+   gpsSatelliteTracking      TruthValue
+}
+   
+gpsSatellitePrn OBJECT-TYPE
+		SYNTAX  	Integer32 (0..32)
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION    
+			 "The satellite's Pseudorandom Noise (prn) code assignment."
+		::= { gpsSatelliteEntry 1 }
+		
+gpsSatelliteElevation OBJECT-TYPE
+		SYNTAX  	Integer32
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION    
+			 "The satellite's elevation in degrees."
+		::= { gpsSatelliteEntry 2 }
+		
+gpsSatelliteAzim OBJECT-TYPE
+		SYNTAX  	Integer32
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION    
+			 "The satellite's Azimuth in degrees."
+		::= { gpsSatelliteEntry 3 }
+		
+gpsSatelliteSnr OBJECT-TYPE
+		SYNTAX  	Integer32
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION    
+			 "The satellite's signal to noise ratio in db."
+		::= { gpsSatelliteEntry 4 }
+		
+gpsSatelliteTracking OBJECT-TYPE
+		SYNTAX  	TruthValue
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION    
+			 "The satellite's tracking status."
+		::= { gpsSatelliteEntry 5 }
+		
+gpsVisibleSatellites OBJECT-TYPE
+		SYNTAX  	Integer32
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION    
+			 "The number of visible satellites."
+		::= { rfGps 26 }
+		
+gpsTrackedSatellites OBJECT-TYPE
+		SYNTAX  	Integer32
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION    
+			 "The number of tracked satellites."
+		::= { rfGps 27 }
+		
+--************************************************************************************
+-- Gps Keyinfo subsection
+--************************************************************************************
+
+gpsCvStatus OBJECT-TYPE
+		SYNTAX  	INTEGER   { unauthorized(1),
+								noKeyForToday(2),
+								containsTodays(3),
+								todaysKeyInco(4),
+								waitingSvData(5),
+								zeroSuccessful(6),
+								zeroFailed(7),
+								keyLoaded(8) }
+								
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION    
+			 "The SA/S-S Message."
+		::= { rfGps 28 }
+		
+gpsDaysWithKeys OBJECT-TYPE
+		SYNTAX  	Integer32
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION    
+			 "The number of days with the keys."
+		::= { rfGps 29 }
+
+--************************************************************************************
+-- Gps Userdatum subsection
+-- The objects are parameters used to define a user specified geodetic datum
+-- which is the tool used to define the shape and size of the earth as well as
+-- reference points for various coordinate systems used in mapping the earth.
+-- Most of the objects are in units of meters wihle the inverse flattening
+-- is dimensionless.
+--************************************************************************************
+
+gpsUserDatum1SemiMajorAxis OBJECT-TYPE
+		SYNTAX  	OCTET STRING
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION
+			 "Semi Major Axis."
+		::= { rfGps 30 }
+
+gpsUserDatum1InverseFlattening OBJECT-TYPE
+		SYNTAX  	OCTET STRING
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION
+			 "Inverse Flattening."
+		::= { rfGps 31 }
+
+gpsUserDatum1Dx OBJECT-TYPE
+		SYNTAX  	Integer32
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION
+			 "Dx Offset."
+		::= { rfGps 32 }
+
+gpsUserDatum1Dy OBJECT-TYPE
+		SYNTAX  	Integer32
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION
+			 "Dy Offset."
+		::= { rfGps 33 }
+
+gpsUserDatum1Dz OBJECT-TYPE
+		SYNTAX  	Integer32
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION
+			 "Dz Offset."
+		::= { rfGps 34 }
+		
+gpsUserDatum2SemiMajorAxis OBJECT-TYPE
+		SYNTAX  	OCTET STRING
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION
+			 "Semi Major Axis (string representation of floating point number)."
+		::= { rfGps 35 }
+
+gpsUserDatum2InverseFlattening OBJECT-TYPE
+		SYNTAX  	OCTET STRING 
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION
+			 "Inverse Flattening (string representation of floating point number)."
+		::= { rfGps 36 }
+
+gpsUserDatum2Dx OBJECT-TYPE
+		SYNTAX  	Integer32
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION
+			 "Dx Offset."
+		::= { rfGps 37 }
+
+gpsUserDatum2Dy OBJECT-TYPE
+		SYNTAX  	Integer32
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION
+			 "Dy Offset."
+		::= { rfGps 38 }
+
+gpsUserDatum2Dz OBJECT-TYPE
+		SYNTAX  	Integer32
+		MAX-ACCESS  read-only
+		STATUS  	current
+		DESCRIPTION
+			 "Dz Offset."
+		::= { rfGps 39 }
+				
+--************************************************************************************
+-- Gps Traps subsection
+--************************************************************************************		
+		
+gpsTrapSendVisibleSatellites OBJECT-TYPE
+		SYNTAX      TruthValue
+	    MAX-ACCESS  read-write
+	    STATUS      current
+	    DESCRIPTION
+			 "If this node should send a trap when the number of visible
+			  satellites falls below specified limits.
+			  Note:  This trap only goes off when the number of visible
+			         satellites change, regardless if the limit has changed."
+		::= { rfGps 40 }
+		
+gpsTrapSendTrackedSatellites OBJECT-TYPE
+		SYNTAX      TruthValue
+	    MAX-ACCESS  read-write
+	    STATUS      current
+	    DESCRIPTION
+			 "If this node should send a trap when the number of tracked
+			  satellites falls below specified limits.
+			  Note:  This trap only goes off when the number of tracked
+			         satellites change, regardless if the limit has changed."
+		::= { rfGps 41 }
+
+gpsTrapSendTrackingAcquired OBJECT-TYPE
+		SYNTAX      TruthValue
+	    MAX-ACCESS  read-write
+	    STATUS      current
+	    DESCRIPTION
+			 "If this node should send a trap when its' status changes
+			  to tracking."
+		::= { rfGps 42 }
+
+gpsTrapVisibleSatellitesFloor OBJECT-TYPE
+		SYNTAX      Integer32
+	    MAX-ACCESS  read-write
+	    STATUS      current
+	    DESCRIPTION
+			 "The lower limit at which the visible satellites trap will trigger."
+		::= { rfGps 43 }
+		
+gpsTrapTrackedSatellitesFloor OBJECT-TYPE
+		SYNTAX      Integer32
+	    MAX-ACCESS  read-write
+	    STATUS      current
+	    DESCRIPTION
+			 "The lower limit at which the tracked satellites trap will trigger."
+		::= { rfGps 44 }
+		
+gpsTraps OBJECT IDENTIFIER ::= { rfGps 45 }
+   
+gpsTrapVisibleSatLimitReached NOTIFICATION-TYPE
+   OBJECTS {gpsVisibleSatellites }
+   STATUS  current
+   DESCRIPTION
+           "Indicates a node's visible satellites has reached its higher
+		    or lower limit."
+   ::= { gpsTraps 1 }
+   
+gpsTrapTrackedSatLimitReached NOTIFICATION-TYPE
+   OBJECTS { gpsTrackedSatellites }
+   STATUS  current
+   DESCRIPTION
+           "Indicates a node's tracked satellites has reached its higher
+		    or lower limit."
+   ::= { gpsTraps 2 }
+   
+gpsTrapTrackingAcquired NOTIFICATION-TYPE
+   OBJECTS { gpsState }
+   STATUS  current
+   DESCRIPTION
+           "Indicates a node's state has changed to tracking."
+   ::= { gpsTraps 3 }
+   
+END

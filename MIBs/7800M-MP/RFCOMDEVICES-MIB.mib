@@ -1,0 +1,29 @@
+--************************************************************************************
+-- This MIB module defines the Harris RF Communications Devices MIB.
+--
+-- Description: The RF Com Devices module contains the parameters that
+--              provide generic status of a Harris RF Communication Devices.
+-- 
+-- 
+-- THIS INFORMATION IS ITAR CONTROLLED
+--
+-- THIS INFORMATION IS CONTROLLED BY THE U.S. DEPARTMENT OF STATE INTERNATIONAL TRAFFIC 
+-- IN ARMS REGULATIONS (ITAR), 22CFR 120-130, AND CANNOT BE EXPORTED FROM THE UNITED 
+-- STATES OR SHARED WITH A FOREIGN PERSON WITHOUT PRIOR APPROVAL FROM THE UNITED 
+-- STATES GOVERNMENT.
+--
+--************************************************************************************
+RFCOMDEVICES-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+    MODULE-IDENTITY, OBJECT-TYPE, enterprises FROM SNMPv2-SMI;
+
+rfcomDevices MODULE-IDENTITY
+   LAST-UPDATED "201102150000Z"
+   ORGANIZATION "Harris Corporation"
+   CONTACT-INFO "Harris RFCD (585) 244-5830"
+   DESCRIPTION
+      "MIB for Harris RFCOM Devices Family"
+   ::= { enterprises harris(290) css(3) rfcom(5) rfcomProducts(1) 3 }
+
+END

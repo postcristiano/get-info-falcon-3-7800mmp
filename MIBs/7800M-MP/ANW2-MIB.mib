@@ -1,0 +1,438 @@
+--************************************************************************************
+-- This MIB module defines the Harris ANW2 MIB.
+--
+-- Description: The ANW2 module contains the parameters that
+--              provide status of the Harris ANW2 Waveform.
+-- 
+-- THIS INFORMATION IS ITAR CONTROLLED
+--
+-- THIS INFORMATION IS CONTROLLED BY THE U.S. DEPARTMENT OF STATE INTERNATIONAL TRAFFIC 
+-- IN ARMS REGULATIONS (ITAR), 22CFR 120-130, AND CANNOT BE EXPORTED FROM THE UNITED 
+-- STATES OR SHARED WITH A FOREIGN PERSON WITHOUT PRIOR APPROVAL FROM THE UNITED 
+-- STATES GOVERNMENT.
+-- 
+--************************************************************************************
+
+ANW2-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+    MODULE-IDENTITY, OBJECT-TYPE, Integer32, Counter32, Gauge32,
+    enterprises, IpAddress, mib-2, NOTIFICATION-TYPE FROM SNMPv2-SMI
+    TEXTUAL-CONVENTION, DisplayString, AutonomousType, TruthValue    FROM SNMPv2-TC
+    MODULE-COMPLIANCE, OBJECT-GROUP,
+    NOTIFICATION-GROUP                               FROM SNMPv2-CONF
+    snmpTraps                                        FROM SNMPv2-MIB
+    f3Waveforms FROM FALCONIII-MIB;
+
+anw2 MODULE-IDENTITY
+   LAST-UPDATED "201210310322Z"
+   ORGANIZATION "Harris Corporation"
+   CONTACT-INFO "Harris RFCD (585) 244-5830"
+   DESCRIPTION
+      "MIB for Harris Advanced Networking Wideband Waveform ANW2"
+   ::= { f3Waveforms 1 }
+
+
+Anw2NodeSlot ::= TEXTUAL-CONVENTION
+   DISPLAY-HINT "d"
+   STATUS       current
+   DESCRIPTION
+      "Timeslot utilized by a particular node to receive data in this ANW2 network.
+       A value of 0 indicates no slot information is available."
+   SYNTAX       Integer32 (0..1000)
+
+anw2Frequency OBJECT-TYPE
+   SYNTAX      DisplayString (SIZE (0..10))
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Center frequency of this ANW2 network."
+   ::= { anw2 1 }
+
+anw2UpTime OBJECT-TYPE
+   SYNTAX      Counter32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Number of seconds this ANW2 network has been active."
+   ::= { anw2 2 }
+
+anw2SlotId OBJECT-TYPE
+   SYNTAX      Anw2NodeSlot
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Timeslot this radio occupies."
+   ::= { anw2 3 }
+
+anw2NodesInNet OBJECT-TYPE
+   SYNTAX      Integer32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Number of nodes in this ANW2 network."
+   ::= { anw2 4 }
+
+anw2OneHopNeighbors OBJECT-TYPE
+   SYNTAX      Integer32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Number of nodes this radio can directly reach (no relay)."
+   ::= { anw2 5 }
+
+anw2DataPacketsSent OBJECT-TYPE
+   SYNTAX      Counter32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Number of data packets sent by this node to the ANW2 network."
+   ::= { anw2 6 }
+
+anw2DataPacketsReceived OBJECT-TYPE
+   SYNTAX      Counter32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Number of data packets received by this node from the ANW2 network."
+   ::= { anw2 7 }
+
+anw2DataPacketsRelayed OBJECT-TYPE
+   SYNTAX      Counter32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Number of data packets relayed by this node from/to the ANW2 network."
+   ::= { anw2 8 }
+
+anw2TxDataPacketsDropped OBJECT-TYPE
+   SYNTAX      Counter32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Number of data packets dropped during transmit by this node destined for the ANW2 network."
+   ::= { anw2 9 }
+
+anw2RxDataPacketsDropped OBJECT-TYPE
+   SYNTAX      Counter32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Number of data packets dropped during receive by this node from the ANW2 network."
+   ::= { anw2 10 }
+
+anw2McastPacketsSent OBJECT-TYPE
+   SYNTAX      Counter32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Number of multicast packets sent by this node to the ANW2 network."
+   ::= { anw2 11 }
+
+anw2McastPacketsReceived OBJECT-TYPE
+   SYNTAX      Counter32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Number of multicast packets received by this node from the ANW2 network."
+   ::= { anw2 12 }
+
+anw2McastPacketsRelayed OBJECT-TYPE
+   SYNTAX      Counter32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Number of multicast packets relayed by this node from/to the ANW2 network."
+   ::= { anw2 13 }
+
+anw2TxMcastPacketsDropped OBJECT-TYPE
+   SYNTAX      Counter32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Number of multicast packets dropped during transmit by this node destined for the ANW2 network."
+   ::= { anw2 14 }
+
+anw2RxMcastPacketsDropped OBJECT-TYPE
+   SYNTAX      Counter32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Number of multicast packets dropped during receive by this node from the ANW2 network."
+   ::= { anw2 15 }
+
+anw2VoicePacketsSent OBJECT-TYPE
+   SYNTAX      Counter32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Number of voice packets sent by this node to the ANW2 network."
+   ::= { anw2 16 }
+
+anw2VoicePacketsReceived OBJECT-TYPE
+   SYNTAX      Counter32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Number of voice packets received by this node from the ANW2 network."
+   ::= { anw2 17 }
+
+anw2VoicePacketsRelayed OBJECT-TYPE
+   SYNTAX      Counter32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Number of voice packets relayed by this node from/to the ANW2 network."
+   ::= { anw2 18 }
+
+anw2TxVoicePacketsDropped OBJECT-TYPE
+   SYNTAX      Counter32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Number of voice packets dropped during transmit by this node destined for the ANW2 network."
+   ::= { anw2 19 }
+
+anw2RxVoicePacketsDropped OBJECT-TYPE
+   SYNTAX      Counter32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Number of voice packets dropped during receive by this node from the ANW2 network."
+   ::= { anw2 20 }
+
+anw2BeaconPacketsSent OBJECT-TYPE
+   SYNTAX      Counter32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Number of beacon packets sent by this node to the ANW2 network."
+   ::= { anw2 21 }
+
+anw2BeaconPacketsReceived OBJECT-TYPE
+   SYNTAX      Counter32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Number of beacon packets received by this node from the ANW2 network."
+   ::= { anw2 22 }
+
+anw2TransmitRate OBJECT-TYPE
+   SYNTAX      Gauge32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Current transmission rate in Kilobits per second."
+   ::= { anw2 23 }
+
+anw2ReceiveRate OBJECT-TYPE
+   SYNTAX      Gauge32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Current receive rate in Kilobits per second."
+   ::= { anw2 24 }
+   
+anw2FlowPauseCount OBJECT-TYPE
+   SYNTAX      Counter32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Number of times this node has gone into flow pause."
+   ::= { anw2 25 }   
+
+anw2TransmitPower OBJECT-TYPE
+   SYNTAX      DisplayString (SIZE (0..10))
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Current transmission power in Watts."
+   ::= { anw2 26 }
+
+anw2VSWR OBJECT-TYPE
+   SYNTAX      DisplayString (SIZE (0..10))
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Voltage Standing Wave Ratio."
+   ::= { anw2 27 }
+
+-- Table of Nodes in the ANW2 Network
+anw2NetworkTable  OBJECT-TYPE
+   SYNTAX      SEQUENCE OF Anw2NetEntry
+   MAX-ACCESS  not-accessible
+   STATUS      current
+   DESCRIPTION
+      "A list of hosts visible in the RF network."
+   ::= { anw2 28 }
+
+-- Defines rfHostEntry variable, and place in rfHostsTable
+anw2NetEntry OBJECT-TYPE
+   SYNTAX      Anw2NetEntry
+   MAX-ACCESS  not-accessible
+   STATUS      current
+   DESCRIPTION
+      "A list of nodes visible in the ANW2 network."
+   INDEX    { anw2NetNodeID }
+   ::= { anw2NetworkTable 1 }
+
+Anw2NetEntry ::= SEQUENCE {
+      anw2NetNodeID           Anw2NodeSlot,
+      anw2NetRedIP            IpAddress,
+      anw2NetBlackIP          IpAddress,
+      anw2NetHops             Integer32,
+      anw2NetWaveformID       INTEGER,
+      anw2NetNextHopNode      Anw2NodeSlot
+   }
+
+anw2NetNodeID OBJECT-TYPE
+   SYNTAX      Anw2NodeSlot
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Timeslot used when transmitting to this node."
+   ::= { anw2NetEntry 1 }
+
+anw2NetRedIP OBJECT-TYPE
+   SYNTAX      IpAddress
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Red IP Address of this node."
+   ::= { anw2NetEntry 2 }
+
+anw2NetBlackIP OBJECT-TYPE
+   SYNTAX      IpAddress
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Black IP Address of this node."
+   ::= { anw2NetEntry 3 }
+
+anw2NetHops OBJECT-TYPE
+   SYNTAX      Integer32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Number of hops needed to reach this node."
+   ::= { anw2NetEntry 4 }
+
+anw2NetWaveformID OBJECT-TYPE
+   SYNTAX      INTEGER {
+                  wf1(1),
+                  wf2(2),
+                  wf3(3),
+                  wf4(4),
+                  wf5(5),
+                  wf6(6),
+                  wf7(7),
+				  wf8(8),
+				  wf9(9)
+               }
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "Waveform type used to transmit to this node."
+   ::= { anw2NetEntry 5 }
+
+anw2NetNextHopNode OBJECT-TYPE
+	SYNTAX      Anw2NodeSlot
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "If multiple hops are necessary to reach this node, the
+       node id of the first hop."
+   ::= { anw2NetEntry 6 }
+
+anw2SendHostJoinedTrap OBJECT-TYPE
+	SYNTAX      TruthValue
+   MAX-ACCESS  read-write
+   STATUS      current
+   DESCRIPTION
+      "If this node should send a trap when a node joins the ANW2 network."
+   ::= { anw2 29 }
+
+anw2SendHostLeftTrap OBJECT-TYPE
+	SYNTAX      TruthValue
+   MAX-ACCESS  read-write
+   STATUS      current
+   DESCRIPTION
+      "If this node should send a trap when a node leaves the ANW2 network."
+   ::= { anw2 30 }
+
+
+anw2Traps OBJECT IDENTIFIER ::= { anw2 31 }
+
+anw2NodeJoined NOTIFICATION-TYPE
+   OBJECTS {anw2NetNodeID, anw2NetRedIP, anw2NetBlackIP}
+   STATUS  current
+   DESCRIPTION
+           "Indicates a node joined the ANW2 network."
+   ::= { anw2Traps 1 }
+
+anw2NodeLeft NOTIFICATION-TYPE
+   OBJECTS {anw2NetNodeID, anw2NetRedIP, anw2NetBlackIP}
+   STATUS  current
+   DESCRIPTION
+           "Indicates a node left the ANW2 network."
+    ::= { anw2Traps 2 }
+
+
+anw2BorrowRequestSent OBJECT-TYPE
+   SYNTAX      Counter32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "total number of borrow request TLVs sent"
+   ::= { anw2 32 }
+
+anw2BorrowRequestReceived OBJECT-TYPE
+   SYNTAX      Counter32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "total number of borrow request TLVs received"
+   ::= { anw2 33 }
+
+anw2ContentionResolutionSent OBJECT-TYPE
+   SYNTAX      Counter32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "total number of contention resolution TLVs sent"
+   ::= { anw2 34 }
+
+anw2ContentionResolutionReceived OBJECT-TYPE
+   SYNTAX      Counter32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "total number of contention resolution TLVs received"
+   ::= { anw2 35 }
+
+anw2LeaseBreakSent OBJECT-TYPE
+   SYNTAX      Counter32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "total number of lease break TLVs sent"
+   ::= { anw2 36 }
+
+anw2LeaseBreakReceived OBJECT-TYPE
+   SYNTAX      Counter32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "total number of lease break TLVs received"
+   ::= { anw2 37 }
+
+anw2FramesCurrentlyBorrowed OBJECT-TYPE
+   SYNTAX      Integer32
+   MAX-ACCESS  read-only
+   STATUS      current
+   DESCRIPTION
+      "number of frames that we are currently borrowing"
+   ::= { anw2 38 }
+
+
+END
