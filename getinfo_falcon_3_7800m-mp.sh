@@ -1,7 +1,6 @@
 #!/bin/bash
-# language: potuguese pt-br
-# escrito por cristiano nunes/ 2018
-# postcristiano@gmail.com
+# lang pt-br
+# written by cristiano nunes/ 2018
 # only debian-like distro
 # test version
 
