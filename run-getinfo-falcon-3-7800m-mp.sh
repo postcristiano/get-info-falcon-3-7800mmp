@@ -1,6 +1,6 @@
 #!/bin/bash
 # lang pt-br
-# written by cristiano nunes/ 2018
+# author: postcristiano/2018
 # only debian-like distro
 # test version
 
