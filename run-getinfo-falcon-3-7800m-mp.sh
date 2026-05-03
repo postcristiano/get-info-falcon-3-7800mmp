@@ -2,180 +2,133 @@
 # lang pt-br
 # author: postcristiano/2018
 # only debian-like distro
-# test version
 
-function instala() {
+# ==============================
+# FUNÇÕES BASE
+# ==============================
 
-  apt-get update && apt-get install snmp -y 2> /dev/null > /dev/null
-  echo "aplicacao SNMP instalada."
+instala() {
+  apt-get update > /dev/null 2>&1 && apt-get install snmp -y > /dev/null 2>&1
+  echo "Aplicação SNMP instalada."
 }
 
-function freq() {
+snmp_exec() {
+  local oid="$1"
+  snmpwalk -v3 -l authPriv \
+    -u "$1_USER" -a "$2_AUTH" -A "$3_PASS" \
+    -x "$4_PRIV" -X "$5_PRIV_PASS" \
+    "$6_HOST" -M "$7_MIBS" "$oid"
+}
+
+get_value() {
+  local oid="$1"
+  local grep_filter="$2"
+
   echo " "
-  snmpwalk -v3 -l authPriv -u $1 -a $2 -A "$3" -x $4 -X "$5" $6 -M $7 .1.3.6.1.4.1.290 | grep 290.3.5.1.2.2.1.1.0 | cut -d ":" -f2
+  snmpwalk -v3 -l authPriv \
+    -u "$USER" -a "$AUTH" -A "$PASS" \
+    -x "$PRIV" -X "$PRIV_PASS" \
+    "$HOST" -M "$MIBS" .1.3.6.1.4.1.290 \
+    | grep "$grep_filter" | cut -d ":" -f2
+
   echo "------------------------------------------------------"
 }
 
-function uptim() {
-  echo " "
-  snmpwalk -v3 -l authPriv -u $1 -a $2 -A "$3" -x $4 -X "$5" $6 -M $7 .1.3.6.1.4.1.290 | grep 290.3.5.1.2.2.1.2.0 | cut -d ":" -f2
-  echo "------------------------------------------------------"
-}
+# ==============================
+# FUNÇÕES ESPECÍFICAS
+# ==============================
 
-function taxtrans() {
-  echo " "
-  snmpwalk -v3 -l authPriv -u $1 -a $2 -A "$3" -x $4 -X "$5" $6 -M $7 .1.3.6.1.4.1.290 | grep 290.3.5.1.2.2.1.26.0 | cut -d ":" -f2
-  echo "------------------------------------------------------"
-}
+freq()     { get_value ".1.3.6.1.4.1.290" "290.3.5.1.2.2.1.1.0"; }
+uptim()    { get_value ".1.3.6.1.4.1.290" "290.3.5.1.2.2.1.2.0"; }
+taxtrans() { get_value ".1.3.6.1.4.1.290" "290.3.5.1.2.2.1.26.0"; }
+vswr()     { get_value ".1.3.6.1.4.1.290" "290.3.5.1.2.2.1.27.0"; }
+position() { get_value ".1.3.6.1.4.1.290" "290.3.5.1.3.1.[23].0"; }
+alti()     { get_value ".1.3.6.1.4.1.290" "290.3.5.1.3.1.6.0"; }
+speed()    { get_value ".1.3.6.1.4.1.290" "290.3.5.1.3.1.9.0"; }
+satel()    { get_value ".1.3.6.1.4.1.290" "290.3.5.1.3.1.26.0"; }
+slop()     { get_value ".1.3.6.1.4.1.290" "290.3.5.1.3.1.19.0"; }
 
-function vswr() {
-  echo " "
-  snmpwalk -v3 -l authPriv -u $1 -a $2 -A "$3" -x $4 -X "$5" $6 -M $7 .1.3.6.1.4.1.290 | grep 290.3.5.1.2.2.1.27.0 | cut -d ":" -f2
-  echo "------------------------------------------------------"
-}
+# ==============================
+# MENU
+# ==============================
 
-function position() {
-  echo " "
-  snmpwalk -v3 -l authPriv -u $1 -a $2 -A "$3" -x $4 -X "$5" $6 -M $7 .1.3.6.1.4.1.290 | grep 290.3.5.1.3.1.[23].0 | cut -d ":" -f2
-  echo "------------------------------------------------------"
-}
-
-function alti() {
-  echo " "
-  snmpwalk -v3 -l authPriv -u $1 -a $2 -A "$3" -x $4 -X "$5" $6 -M $7 .1.3.6.1.4.1.290 | grep 290.3.5.1.3.1.6.0 | cut -d ":" -f2
-  echo "------------------------------------------------------"
-}
-
-function speed() {
-  echo " "
-  snmpwalk -v3 -l authPriv -u $1 -a $2 -A "$3" -x $4 -X "$5" $6 -M $7 .1.3.6.1.4.1.290 | grep 290.3.5.1.3.1.9.0 | cut -d ":" -f2
-  echo "------------------------------------------------------"
-}
-
-function satel() {
-  echo " "
-  snmpwalk -v3 -l authPriv -u $1 -a $2 -A "$3" -x $4 -X "$5" $6 -M $7 .1.3.6.1.4.1.290 | grep 290.3.5.1.3.1.26.0 | cut -d ":" -f2
-  echo "------------------------------------------------------"
-}
-
-function slop() {
-  echo " "
-  snmpwalk -v3 -l authPriv -u $1 -a $2 -A "$3" -x $4 -X "$5" $6 -M $7 .1.3.6.1.4.1.290 | grep 290.3.5.1.3.1.19.0 | cut -d ":" -f2
-  echo "------------------------------------------------------"
-}
-
-function rodaprogram() {
+rodaprogram() {
   while true; do
-  echo ">>> | INFO SNMP DO FALCON III 7800M-MP | <<<"
-  echo "      ***executar script como root***"
-  echo "------------------------------------------------------"
-  echo "-> OPCOES DE UTILIZACAO: "
-  echo "   [1] -> Ver frequencia que o radio esta operando (converter de hex string p/ texo) "
-  echo "   [2] -> Ver a quanto tempo o radio esta ligado em segundos"
-  echo "   [3] -> Ver taxa atual de transmissão de dados em Kb"
-  echo "   [4] -> Ver VSWR do radio (converter de hex string p/ texo) "
-  echo "   [5] -> Ver latitude e longitude da localizacao do radio em radianos"
-  echo "   [6] -> Ver altitude em metros da localizacao do radio"
-  echo "   [7] -> Ver velocidade de deslocamento do radio (em milhas Kph)"
-  echo "   [8] -> Ver numero de satelites visiveis pelo radio"
-  echo "   [9] -> Ver sleep time do GPS do radio. "
-  tput setaf 1
-  echo "   [10] -> Instalar o SNMP. Necessario para usar as opcoes anteriores."
-  tput sgr 0
-  echo "------------------------------------------------------"
-  read -p "   Selecione uma opcao e click [ENTER]  "  opcao
-  case $opcao in
-    1 )
-    tput setaf 3
-    echo "A frequencia que o radio esta operando (converter de hex string p/ texo): "
-    freq
-    echo " "
+    clear
+    echo ">>> | INFO SNMP DO FALCON III 7800M-MP | <<<"
+    echo "      ***executar script como root***"
+    echo "------------------------------------------------------"
+    echo "-> OPCOES DE UTILIZACAO: "
+    echo "   [1] Frequência"
+    echo "   [2] Uptime"
+    echo "   [3] Taxa de transmissão"
+    echo "   [4] VSWR"
+    echo "   [5] Latitude/Longitude"
+    echo "   [6] Altitude"
+    echo "   [7] Velocidade"
+    echo "   [8] Satélites"
+    echo "   [9] Sleep GPS"
+    tput setaf 1
+    echo "   [10] Instalar SNMP"
     tput sgr 0
-      ;;
-    2 )
+    echo "------------------------------------------------------"
+
+    read -rp "Selecione uma opcao: " opcao
+
     tput setaf 3
-    echo "O radio esta ligado há (em segundos): "
-    uptim
-    echo " "
+
+    case "$opcao" in
+      1) echo "Frequência:"; freq ;;
+      2) echo "Uptime (segundos):"; uptim ;;
+      3) echo "Taxa de transmissão (Kb):"; taxtrans ;;
+      4) echo "VSWR:"; vswr ;;
+      5) echo "Localização:"; position ;;
+      6) echo "Altitude (m):"; alti ;;
+      7) echo "Velocidade:"; speed ;;
+      8) echo "Satélites visíveis:"; satel ;;
+      9) echo "Sleep GPS:"; slop ;;
+      10) instala ;;
+      *) echo "Opção inválida." ;;
+    esac
+
     tput sgr 0
-      ;;
-    3 )
-    tput setaf 3
-    echo "A taxa de transmissão em Kilobits atualmente é: "
-    taxtrans
-    echo " "
-    tput sgr 0
-      ;;
-    4 )
-    tput setaf 3
-    echo "O VSWR do rádio é (converter de hex string p/ texo): "
-    vswr
-    echo " "
-    tput sgr 0
-      ;;
-    5 )
-    tput setaf 3
-    echo "A localização do equipamento rádio é: "
-    position
-    echo " "
-    tput sgr 0
-      ;;
-    6 )
-    tput setaf 3
-    echo "A altitude do local que se encontra o radio é: "
-    alti
-    echo " "
-    tput sgr 0
-      ;;
-    7 )
-    tput setaf 3
-    echo "A velocidade de deslocamento do radio é: "
-    speed
-    echo " "
-    tput sgr 0
-      ;;
-    8 )
-    tput setaf 3
-    echo "Numero de satelites visiveis pelo radio é: "
-    satel
-    echo " "
-    tput sgr 0
-      ;;
-    9 )
-    tput setaf 3
-    echo "O sleep time do GPS do radio é: "
-    slop
-    echo " "
-    tput sgr 0
-      ;;
-    10 )
-    instala
-      ;;
-  esac
+    echo ""
+    read -rp "Pressione ENTER para continuar..."
   done
 }
 
+# ==============================
+# VALIDAÇÃO DE PARÂMETROS
+# ==============================
+
 if [ $# -eq 0 ]; then
   echo ""
-  echo "Digite os parametros para obter as informacoes de SNMPv3 do radio Harris Falcon III RF 7800M-MP. "
-  echo " "
-  echo "Rode o script como super usuario colocando os parametros na seguinte ordem:  "
-  echo "7800mmp-snmp.sh <usuario> <prot_autent> <senha_autent> <prot_cript> <senha_cript> <end_ip_do_radio> <caminho_mibs> "
-  echo " "
-  echo "Exemplo de sintaxe: "
-  echo "7800mmp-snmp.sh USER001 SHA senha123 AES senha123 10.10.60.50 /home/aluno/Downloads/MIBs/7800M-MP/"
-  echo " "
-  echo "*atencao nas letras maiusculas e minusculas. "
-  echo "**utilize um espaço simples entre os parametros. "
-elif [ $1 = "-h" ] || [ $1 = "--help" ] || [ $1 = "--ajuda" ] ; then
-  echo "Rode o script como super usuario colocando os parametros na seguinte ordem:  "
-  echo "7800mmp-snmp.sh <usuario> <prot_autent> <senha_autent> <prot_cript> <senha_cript> <end_ip_do_radio> <caminho_mibs> "
-  echo " "
-  echo "Exemplo de sintaxe: "
-  echo "7800mmp-snmp.sh USER001 SHA senha123 AES senha123 10.10.60.50 /home/aluno/Downloads/MIBs/7800M-MP/"
-  echo " "
-  echo "*atencao nas letras maiusculas e minusculas. "
-  echo "**utilize um espaço simples entre os parametros. "
-else
-  rodaprogram
+  echo "Uso:"
+  echo "7800mmp-snmp.sh <usuario> <prot_autent> <senha_autent> <prot_cript> <senha_cript> <ip> <mibs>"
+  echo ""
+  echo "Exemplo:"
+  echo "7800mmp-snmp.sh USER001 SHA senha123 AES senha123 10.10.60.50 /caminho/mibs"
+  exit 1
+
+elif [[ "$1" == "-h" || "$1" == "--help" || "$1" == "--ajuda" ]]; then
+  echo "Mesma ajuda acima."
+  exit 0
 fi
+
+# ==============================
+# ATRIBUIÇÃO DE VARIÁVEIS
+# ==============================
+
+USER="$1"
+AUTH="$2"
+PASS="$3"
+PRIV="$4"
+PRIV_PASS="$5"
+HOST="$6"
+MIBS="$7"
+
+# ==============================
+# EXECUÇÃO
+# ==============================
+
+rodaprogram
